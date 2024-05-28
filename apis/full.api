@@ -1,0 +1,99 @@
+syntax = "v1"
+
+type (
+	// 定义首页查询数据信息接口请求
+	GetIndexDataReq  {}
+	// 定义首页查询数据信息接口响应
+	GetIndexDataRes {
+		Status int64               `json:"status"`
+		Msg    string              `json:"msg"`
+		Data   GetIndexDataResData `json:"data"`
+	}
+	GetIndexDataResData {
+		GamerCount   int64 `json:"gamerCount"`
+		ChallengeNum int64 `json:"challengeNum"`
+		BestScore    int64 `json:"bestScore"`
+		BestRank     int64 `json:"bestRank"`
+	}
+	SendGameInfoReq {
+		Score int64 `json:"score"`
+	}
+	SendGameInfoRes {
+		Status int64  `json:"status"`
+		Msg    string `json:"msg"`
+	}
+)
+
+@server (
+	jwt:        JwtAuth
+	group:      game
+	middleware: JwtMiddleware
+)
+service ruiMi {
+	@handler getIndexData
+	get /game/index (GetIndexDataReq) returns (GetIndexDataRes)
+
+	@handler SendGameInfo
+	post /game/info (SendGameInfoReq) returns (SendGameInfoRes)
+}
+
+type (
+	// 定义上报用户信息接口
+	SendUserInfoReq {
+		ChallengeId int64  `json:"challengeId"`
+		AccountName string `json:"accountName"`
+		AccountPass string `json:"accountPass"`
+		UserName    string `json:"userName"`
+		UserAge     int64  `json:"userAge"`
+		UserHeadUrl string `json:"userHeadUrl"`
+	}
+	// 定义上报用户信息接口的json响应
+	SendUserInfoRes {
+		Status int64               `json:"status"`
+		Msg    string              `json:"msg"`
+		Data   SendUserInfoResData `json:"data"`
+	}
+	SendUserInfoResData {
+		Token string `json:"token"`
+	}
+)
+
+@server (
+	group: user
+)
+service ruiMi {
+	@handler sendUserInfo
+	post /user/info (SendUserInfoReq) returns (SendUserInfoRes)
+}
+
+type (
+	// 定义上报用户信息接口
+	GetRankListReq {
+		Page int64 `form:"page"`
+		Size int64 `form:"size"`
+	}
+	// 定义上报用户信息接口的json响应
+	GetRankListRes {
+		Status int64                `json:"status"`
+		Msg    string               `json:"msg"`
+		Data   []GetRankListResData `json:"data"`
+		Count  int64                `json:"count"`
+	}
+	GetRankListResData {
+		HeadUrl  string `json:"headUrl"`
+		UserName string `json:"userName"`
+		UserAge  int64  `json:"userAge"`
+		Score    int64  `json:"score"`
+	}
+)
+
+@server (
+	jwt:        JwtAuth
+	group:      rank
+	middleware: JwtMiddleware
+)
+service ruiMi {
+	@handler getRankList
+	get /rank/list (GetRankListReq) returns (GetRankListRes)
+}
+
