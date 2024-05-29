@@ -28,3 +28,8 @@ const (
 	JwtChallengeId = "challengeId"
 	JwtExpireAt    = "expireAt"
 )
+
+const (
+	FileServerUrl  = "http://8.137.119.65/ruiMi/statics"
+	StaticFilePath = "/usr/local/project/static"
+)

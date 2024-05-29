@@ -3,6 +3,7 @@ package rank
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"ruiMiBack2/database"
 	"ruiMiBack2/internal/define"
 	"ruiMiBack2/models/playInfo"
@@ -39,7 +40,7 @@ func (l *GetRankListLogic) GetRankList(req *types.GetRankListReq) (resp *types.G
 	resData := make([]types.GetRankListResData, len(*res))
 	for i, data := range *res {
 		resData[i] = types.GetRankListResData{
-			HeadUrl:  data.AvatorUrl,
+			HeadUrl:  fmt.Sprintf("%s/%s", define.FileServerUrl, data.AvatorUrl),
 			UserName: data.Name,
 			Score:    data.BestScore,
 			UserAge:  data.Age,

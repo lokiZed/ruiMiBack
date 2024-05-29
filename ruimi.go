@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"math/rand"
 	"os"
 	"ruiMiBack2/database"
 	"ruiMiBack2/internal/util"
@@ -94,8 +95,9 @@ func generateUsers(num int) {
 	ctx := context.Background()
 	for i := 0; i < num; i++ {
 		newUser := &user.User{
-			AccountName: util.GetUuid(),
-			AccountPass: util.GetUuid(),
+			AccountName: util.GetUuid()[:8],
+			AccountPass: util.GetUuid()[:8],
+			AvatorUrl:   fmt.Sprintf("avatar%d.jpg", rand.Intn(6)+1),
 		}
 		_, _ = userModel.Insert(ctx, newUser)
 		_, _ = file.WriteString(fmt.Sprintf("%s----%s\n", newUser.AccountName, newUser.AccountPass))
