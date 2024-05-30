@@ -24,6 +24,13 @@ func (m *JwtMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
+		//challengeIdStr := r.Context().Value(define.JwtChallengeId).(json.Number)
+		//challengeId, _ := challengeIdStr.Int64()
+		//if challengeId != 1 {
+		//	w.WriteHeader(http.StatusUnauthorized)
+		//	return
+		//}
+
 		// 允许来自任何源的请求（仅用于测试，生产环境请限制来源）
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		// 如果需要，还可以设置其他 CORS 头部，如：

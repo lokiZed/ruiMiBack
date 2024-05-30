@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"database/sql"
 	"flag"
@@ -9,7 +10,6 @@ import (
 	"math/rand"
 	"os"
 	"ruiMiBack2/database"
-	"ruiMiBack2/internal/util"
 	"ruiMiBack2/models/challenge"
 	"ruiMiBack2/models/challengeUser"
 	"ruiMiBack2/models/user"
@@ -42,8 +42,8 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-	generateUsers(40)
-	generateChallenge(1, 5, 10)
+	//generateUsers(40)
+	//generateChallenge(1, 5, 10)
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()
@@ -93,13 +93,30 @@ func generateUsers(num int) {
 	defer file.Close()
 	userModel := user.NewUserModel(database.GetMysqlConn())
 	ctx := context.Background()
+	cache := map[string]struct{}{}
 	for i := 0; i < num; i++ {
+		accountName := ""
+		for {
+			accountName = generateNumStr(6)
+			_, ok := cache[accountName]
+			if !ok {
+				break
+			}
+		}
 		newUser := &user.User{
-			AccountName: util.GetUuid()[:8],
-			AccountPass: util.GetUuid()[:8],
+			AccountName: accountName,
+			AccountPass: "88888888",
 			AvatorUrl:   fmt.Sprintf("avatar%d.jpg", rand.Intn(6)+1),
 		}
 		_, _ = userModel.Insert(ctx, newUser)
 		_, _ = file.WriteString(fmt.Sprintf("%s----%s\n", newUser.AccountName, newUser.AccountPass))
 	}
+}
+
+func generateNumStr(num int) string {
+	out := bytes.NewBuffer(nil)
+	for i := 0; i < num; i++ {
+		out.WriteByte(byte(rand.Intn(9) + 49))
+	}
+	return out.String()
 }
